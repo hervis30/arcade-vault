@@ -17,6 +17,9 @@ Arcade Vault ("Es una plataforma para jugar online y competir por la mayor canti
 
 There is no test runner configured in this repo yet.
 
+## Skills
+Usa siempre /frontend-desing para hacer la interfaz de usuario.
+
 ## Architecture
 
 - Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`).
