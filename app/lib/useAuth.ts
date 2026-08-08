@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const USER_KEY = "av_user";
 const SCORES_KEY = "av_scores";
@@ -16,33 +16,53 @@ interface SavedScore {
   at: number;
 }
 
-function readUser(): AuthUser | null {
+const listeners = new Set<() => void>();
+
+function emitChange() {
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
+function getSnapshot(): string | null {
+  return localStorage.getItem(USER_KEY);
+}
+
+function getServerSnapshot(): string | null {
+  return null;
+}
+
+function parseUser(raw: string | null): AuthUser | null {
   try {
-    return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+    return JSON.parse(raw ?? "null");
   } catch {
     return null;
   }
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-
-  useEffect(() => {
-    setUser(readUser());
-  }, []);
+  const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const user = parseUser(raw);
 
   const login = useCallback((nextUser: AuthUser | null) => {
-    setUser(nextUser);
     try {
       localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
     } catch {}
+    emitChange();
   }, []);
 
   const signOut = useCallback(() => {
-    setUser(null);
     try {
       localStorage.removeItem(USER_KEY);
     } catch {}
+    emitChange();
   }, []);
 
   return { user, login, signOut };
