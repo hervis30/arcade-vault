@@ -1,6 +1,6 @@
 # 03 · Envío real de correo en el formulario de contacto (Resend)
 
-**Estado:** Approved
+**Estado:** Implementado
 **Depende de:** SPEC 02
 **Fecha:** 2026-08-08
 
