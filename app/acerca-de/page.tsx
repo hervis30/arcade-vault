@@ -207,9 +207,19 @@ export default function AcercaDe() {
                     placeholder="Cuéntanos qué tienes en mente…"
                   ></textarea>
                 </div>
-                <button className="btn xl press" type="submit" style={{ width: "100%" }}>
-                  ▶&nbsp;&nbsp;ENVIAR MENSAJE
+                <button
+                  className="btn xl press"
+                  type="submit"
+                  style={{ width: "100%" }}
+                  disabled={sending}
+                >
+                  {sending ? "ENVIANDO…" : "▶  ENVIAR MENSAJE"}
                 </button>
+                {error && (
+                  <p className="neon-magenta pixel" style={{ marginTop: 12, fontSize: 11 }}>
+                    {error}
+                  </p>
+                )}
               </>
             ) : (
               <div className="terminal-success">
